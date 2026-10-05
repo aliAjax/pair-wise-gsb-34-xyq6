@@ -1,162 +1,82 @@
-seed = {
-  "building": [
-    {
-      "id": 1,
-      "name": "name 1",
-      "campus": "campus 1",
-      "floor_count": "floor count 1",
-      "fire_grade": "fire grade 1",
-      "manager_id": 1,
-      "address_code": "address code 1"
-    },
-    {
-      "id": 2,
-      "name": "name 2",
-      "campus": "campus 2",
-      "floor_count": "floor count 2",
-      "fire_grade": "fire grade 2",
-      "manager_id": 2,
-      "address_code": "address code 2"
-    },
-    {
-      "id": 3,
-      "name": "name 3",
-      "campus": "campus 3",
-      "floor_count": "floor count 3",
-      "fire_grade": "fire grade 3",
-      "manager_id": 3,
-      "address_code": "address code 3"
-    }
-  ],
-  "fireDevice": [
-    {
-      "id": 1,
-      "building_id": 1,
-      "device_code": "device code 1",
-      "device_type": "HYDRANT",
-      "floor": "floor 1",
-      "location_desc": "location desc 1",
-      "install_date": "2026-06-11T09:00:00Z",
-      "status": "IN_PROGRESS",
-      "next_maintenance_at": "2026-06-11T09:00:00Z"
-    },
-    {
-      "id": 2,
-      "building_id": 2,
-      "device_code": "device code 2",
-      "device_type": "SMOKE_DETECTOR",
-      "floor": "floor 2",
-      "location_desc": "location desc 2",
-      "install_date": "2026-06-12T09:00:00Z",
-      "status": "SUBMITTED",
-      "next_maintenance_at": "2026-06-12T09:00:00Z"
-    },
-    {
-      "id": 3,
-      "building_id": 3,
-      "device_code": "device code 3",
-      "device_type": "SPRINKLER",
-      "floor": "floor 3",
-      "location_desc": "location desc 3",
-      "install_date": "2026-06-13T09:00:00Z",
-      "status": "PLANNED",
-      "next_maintenance_at": "2026-06-13T09:00:00Z"
-    }
-  ],
-  "inspectionTask": [
-    {
-      "id": 1,
-      "building_id": 1,
-      "inspector_id": 1,
-      "plan_date": "2026-06-11T09:00:00Z",
-      "task_type": "HYDRANT",
-      "status": "IN_PROGRESS",
-      "checklist_version": "checklist version 1",
-      "finished_at": "2026-06-11T09:00:00Z"
-    },
-    {
-      "id": 2,
-      "building_id": 2,
-      "inspector_id": 2,
-      "plan_date": "2026-06-12T09:00:00Z",
-      "task_type": "SMOKE_DETECTOR",
-      "status": "SUBMITTED",
-      "checklist_version": "checklist version 2",
-      "finished_at": "2026-06-12T09:00:00Z"
-    },
-    {
-      "id": 3,
-      "building_id": 3,
-      "inspector_id": 3,
-      "plan_date": "2026-06-13T09:00:00Z",
-      "task_type": "SPRINKLER",
-      "status": "PLANNED",
-      "checklist_version": "checklist version 3",
-      "finished_at": "2026-06-13T09:00:00Z"
-    }
-  ],
-  "inspectionResult": [
-    {
-      "id": 1,
-      "task_id": 1,
-      "device_id": 1,
-      "item_code": "item code 1",
-      "result_status": "IN_PROGRESS",
-      "measured_value": "measured value 1",
-      "photo_url": "/mock/photo_url-1.png",
-      "note": "note 1"
-    },
-    {
-      "id": 2,
-      "task_id": 2,
-      "device_id": 2,
-      "item_code": "item code 2",
-      "result_status": "SUBMITTED",
-      "measured_value": "measured value 2",
-      "photo_url": "/mock/photo_url-2.png",
-      "note": "note 2"
-    },
-    {
-      "id": 3,
-      "task_id": 3,
-      "device_id": 3,
-      "item_code": "item code 3",
-      "result_status": "PLANNED",
-      "measured_value": "measured value 3",
-      "photo_url": "/mock/photo_url-3.png",
-      "note": "note 3"
-    }
-  ],
-  "hazardTicket": [
-    {
-      "id": 1,
-      "result_id": 1,
-      "severity": "severity 1",
-      "owner_id": 1,
-      "deadline": "deadline 1",
-      "rectify_status": "IN_PROGRESS",
-      "rectify_note": "rectify note 1",
-      "closed_at": "2026-06-11T09:00:00Z"
-    },
-    {
-      "id": 2,
-      "result_id": 2,
-      "severity": "severity 2",
-      "owner_id": 2,
-      "deadline": "deadline 2",
-      "rectify_status": "SUBMITTED",
-      "rectify_note": "rectify note 2",
-      "closed_at": "2026-06-12T09:00:00Z"
-    },
-    {
-      "id": 3,
-      "result_id": 3,
-      "severity": "severity 3",
-      "owner_id": 3,
-      "deadline": "deadline 3",
-      "rectify_status": "PLANNED",
-      "rectify_note": "rectify note 3",
-      "closed_at": "2026-06-13T09:00:00Z"
-    }
-  ]
-}
+"""首次启动时播种演示数据：4 个角色账号、2 栋楼、若干设备、待领取巡检任务。"""
+from datetime import date
+
+from sqlalchemy.orm import Session
+
+from src.constants.inspection_status import PLANNED
+from src.constants.roles import (
+    ROLE_AUDITOR,
+    ROLE_INSPECTOR,
+    ROLE_MAINTAINER,
+    ROLE_SUPERVISOR,
+)
+from src.models.building import Building
+from src.models.fire_device import FireDevice
+from src.models.inspection_task import InspectionTask
+from src.models.user import User
+from src.services.inspection_task_service import InspectionTaskService
+from src.utils.security import hash_password
+
+# 演示账号（用户名/密码一致），前端登录页直接展示。
+DEMO_USERS = [
+    ("inspector", "李巡", ROLE_INSPECTOR),
+    ("inspector2", "王检", ROLE_INSPECTOR),
+    ("maintainer", "赵维保", ROLE_MAINTAINER),
+    ("supervisor", "周主管", ROLE_SUPERVISOR),
+    ("auditor", "钱审计", ROLE_AUDITOR),
+]
+
+
+def seed_database(db: Session):
+    if db.query(User).count() > 0:
+        return
+
+    for username, display_name, role in DEMO_USERS:
+        db.add(User(username=username, display_name=display_name, role=role,
+                    password_hash=hash_password(username)))
+
+    b1 = Building(name="云谷科技园 A 栋", campus="云谷科技园", floor_count=12,
+                  fire_grade="一级", manager_id=4, address_code="330106-A")
+    b2 = Building(name="云谷科技园 B 栋", campus="云谷科技园", floor_count=8,
+                  fire_grade="二级", manager_id=4, address_code="330106-B")
+    db.add_all([b1, b2])
+    db.flush()
+
+    devices = [
+        FireDevice(building_id=b1.id, device_code="MHQ-A-0101", device_type="EXTINGUISHER",
+                   floor="1", location_desc="大堂东侧", install_date=date.fromisoformat("2024-03-01"),
+                   status="NORMAL", next_maintenance_at=date.fromisoformat("2026-12-01")),
+        FireDevice(building_id=b1.id, device_code="XHS-A-0201", device_type="HYDRANT",
+                   floor="2", location_desc="电梯厅西侧", install_date=date.fromisoformat("2023-06-15"),
+                   status="NORMAL", next_maintenance_at=date.fromisoformat("2026-11-15")),
+        FireDevice(building_id=b1.id, device_code="YG-A-0501", device_type="SMOKE_DETECTOR",
+                   floor="5", location_desc="走廊吊顶", install_date=date.fromisoformat("2023-09-01"),
+                   status="NORMAL", next_maintenance_at=date.fromisoformat("2026-10-01")),
+        FireDevice(building_id=b1.id, device_code="PL-A-0801", device_type="SPRINKLER",
+                   floor="8", location_desc="机房上方", install_date=date.fromisoformat("2023-09-01"),
+                   status="NORMAL", next_maintenance_at=date.fromisoformat("2026-10-01")),
+        FireDevice(building_id=b2.id, device_code="SS-B-0101", device_type="EXIT_LIGHT",
+                   floor="1", location_desc="安全出口上方", install_date=date.fromisoformat("2024-01-10"),
+                   status="NORMAL", next_maintenance_at=date.fromisoformat("2026-12-10")),
+        FireDevice(building_id=b2.id, device_code="MHQ-B-0301", device_type="EXTINGUISHER",
+                   floor="3", location_desc="楼梯口", install_date=date.fromisoformat("2024-01-10"),
+                   status="NORMAL", next_maintenance_at=date.fromisoformat("2026-12-10")),
+    ]
+    db.add_all(devices)
+    db.flush()
+
+    task_service = InspectionTaskService(db)
+    task_service.seed_initial_templates()
+
+    t1 = InspectionTask(building_id=b1.id, inspector_id=None, plan_date="2026-10-05",
+                        task_type="EXTINGUISHER", status=PLANNED, checklist_version="v1")
+    t2 = InspectionTask(building_id=b1.id, inspector_id=None, plan_date="2026-10-05",
+                        task_type="HYDRANT", status=PLANNED, checklist_version="v1")
+    t3 = InspectionTask(building_id=b2.id, inspector_id=None, plan_date="2026-10-06",
+                        task_type="EXIT_LIGHT", status=PLANNED, checklist_version="v1")
+    db.add_all([t1, t2, t3])
+    db.flush()
+    for task in (t1, t2, t3):
+        task_service.snapshot_template_for_task(task)
+
+    db.commit()

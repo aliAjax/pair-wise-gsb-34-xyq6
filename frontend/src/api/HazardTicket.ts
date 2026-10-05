@@ -1,21 +1,40 @@
-import { mockData } from "../mocks/seedData";
+import { request } from "./client";
 import type { HazardTicket } from "../types/HazardTicket";
 
-const endpoint = "/api/hazard-ticket";
-
-export async function listHazardTicket(): Promise<HazardTicket[]> {
-  if (typeof fetch !== "undefined" && endpoint.startsWith("/api") && true) {
-    try {
-      const res = await fetch(endpoint);
-      if (res.ok) return await res.json();
-    } catch {
-      // Local mock fallback keeps the UI available during offline review.
-    }
-  }
-  return [...(mockData.hazardTicket as unknown as HazardTicket[])];
+export function listHazardTicket(params?: {
+  rectify_status?: string;
+  device_id?: number;
+}): Promise<HazardTicket[]> {
+  return request<HazardTicket[]>("/hazard-ticket", { query: params });
 }
 
-export async function saveHazardTicket(payload: HazardTicket) {
-  console.info("save HazardTicket", payload);
-  return payload;
+export function assignHazardTicket(
+  ticketId: number,
+  payload: { owner_id: number; severity?: string; deadline?: string },
+): Promise<HazardTicket> {
+  return request<HazardTicket>(`/hazard-ticket/${ticketId}/assign`, {
+    method: "POST",
+    body: payload,
+  });
+}
+
+export function rectifyHazardTicket(
+  ticketId: number,
+  rectifyNote: string,
+): Promise<HazardTicket> {
+  return request<HazardTicket>(`/hazard-ticket/${ticketId}/rectify`, {
+    method: "POST",
+    body: { rectify_note: rectifyNote },
+  });
+}
+
+export function reviewHazardTicket(
+  ticketId: number,
+  approved: boolean,
+  rectifyNote?: string,
+): Promise<HazardTicket> {
+  return request<HazardTicket>(`/hazard-ticket/${ticketId}/review`, {
+    method: "POST",
+    body: { approved, rectify_note: rectifyNote },
+  });
 }

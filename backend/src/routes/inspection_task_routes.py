@@ -1,4 +1,7 @@
 from fastapi import APIRouter
-from src.controllers.inspection_task_controller import list_inspection_task
-router = APIRouter(prefix="/api/inspection-task", tags=["InspectionTask"])
-router.get("")(list_inspection_task)
+
+from src.controllers.inspection_task_controller import router as controller_router
+
+# 前缀在 include 时挂载，保证列表空路径在 /api/... 下直接生效（无 307）。
+router = APIRouter(tags=['InspectionTask'])
+router.include_router(controller_router, prefix='/api/inspection-task')

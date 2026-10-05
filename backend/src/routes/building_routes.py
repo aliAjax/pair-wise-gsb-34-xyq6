@@ -1,4 +1,7 @@
 from fastapi import APIRouter
-from src.controllers.building_controller import list_building
-router = APIRouter(prefix="/api/building", tags=["Building"])
-router.get("")(list_building)
+
+from src.controllers.building_controller import router as controller_router
+
+# 前缀在 include 时挂载，保证列表空路径在 /api/... 下直接生效（无 307）。
+router = APIRouter(tags=['Building'])
+router.include_router(controller_router, prefix='/api/building')

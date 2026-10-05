@@ -1,1 +1,18 @@
-ERROR_MESSAGES = {"AUTH_REQUIRED": "missing token", "RBAC_DENIED": "role denied", "VALIDATION_FAILED": "invalid payload"}
+ERROR_MESSAGES = {
+    "AUTH_REQUIRED": "缺少登录令牌，请先登录",
+    "TOKEN_INVALID": "登录令牌无效或已过期，请重新登录",
+    "RBAC_DENIED": "当前角色无权执行该操作",
+    "VALIDATION_FAILED": "提交内容缺失或格式不正确",
+    "NOT_FOUND": "目标数据不存在或已被删除",
+    "RATE_LIMITED": "请求过于频繁，请稍后再试",
+    "TASK_NOT_CLAIMABLE": "巡检任务当前状态不可领取",
+    "TASK_ALREADY_CLAIMED": "该巡检任务已被其他巡检员领取",
+    "TASK_CLOSED": "巡检任务已提交/复核，结果不可再变更",
+    "TASK_NOT_OWNED": "只有领取该任务的巡检员才能提交结果",
+    "CHECKLIST_STALE": "清单版本已过期，存在新版本检查项，请刷新清单后重试",
+    "CHECKLIST_ITEM_UNKNOWN": "检查项编号不属于当前清单版本",
+    "RESULT_DUPLICATED": "该巡检任务已有一份提交结果，重复提交已被拒绝",
+    "TICKET_NOT_ACTIONABLE": "隐患单当前状态不允许该操作",
+    "INVALID_STATE": "业务状态不满足操作前置条件",
+    "INTERNAL_ERROR": "服务内部错误，请联系管理员",
+}

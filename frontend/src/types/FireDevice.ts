@@ -5,7 +5,7 @@ export interface FireDevice {
   device_type: string;
   floor: string;
   location_desc: string;
-  install_date: string;
+  install_date: string | null;
   status: string;
-  next_maintenance_at: string;
+  next_maintenance_at: string | null;
 }

@@ -1,6 +1,19 @@
 export const ERROR_MESSAGES = {
   AUTH_REQUIRED: "请先登录后再继续操作",
-  RBAC_DENIED: "当前角色没有执行该动作的权限",
+  TOKEN_INVALID: "登录已失效，请重新登录",
+  RBAC_DENIED: "当前角色没有执行该操作的权限",
   VALIDATION_FAILED: "表单字段缺失或格式错误",
-  RATE_LIMITED: "请求过于频繁，请稍后再试"
-};
+  NOT_FOUND: "目标数据不存在",
+  RATE_LIMITED: "请求过于频繁，请稍后再试",
+  TASK_NOT_CLAIMABLE: "巡检任务当前状态不可领取",
+  TASK_ALREADY_CLAIMED: "该巡检任务已被其他巡检员领取",
+  TASK_CLOSED: "巡检任务已提交/复核，结果不可再变更",
+  TASK_NOT_OWNED: "只有领取该任务的巡检员才能提交结果",
+  CHECKLIST_STALE: "清单版本已过期，请刷新清单后重试",
+  CHECKLIST_ITEM_UNKNOWN: "检查项不属于当前清单版本",
+  RESULT_DUPLICATED: "该巡检任务已有一份提交结果，重复提交已被拒绝",
+  TICKET_NOT_ACTIONABLE: "隐患单当前状态不允许该操作",
+  INVALID_STATE: "业务状态不满足操作前置条件",
+  INTERNAL_ERROR: "服务内部错误，请联系管理员",
+  NETWORK_ERROR: "无法连接后端服务，请确认服务已启动",
+} as const;

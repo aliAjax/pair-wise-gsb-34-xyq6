@@ -1,14 +1,24 @@
 import { create } from "zustand";
-import { listInspectionTask } from "../api/InspectionTask";
+import { listInspectionTask, type TaskQuery } from "../api/InspectionTask";
 import type { InspectionTask } from "../types/InspectionTask";
 
-type State = { rows: InspectionTask[]; loading: boolean; load: () => Promise<void> };
+interface InspectionTaskState {
+  rows: InspectionTask[];
+  loading: boolean;
+  error: string;
+  load: (query?: TaskQuery) => Promise<void>;
+}
 
-export const useInspectionTaskStore = create<State>((set) => ({
+export const useInspectionTaskStore = create<InspectionTaskState>((set) => ({
   rows: [],
   loading: false,
-  async load() {
-    set({ loading: true });
-    set({ rows: await listInspectionTask(), loading: false });
+  error: "",
+  async load(query) {
+    set({ loading: true, error: "" });
+    try {
+      set({ rows: await listInspectionTask(query), loading: false });
+    } catch (err) {
+      set({ loading: false, error: (err as Error).message });
+    }
   }
 }));

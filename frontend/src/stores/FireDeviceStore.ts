@@ -2,13 +2,23 @@ import { create } from "zustand";
 import { listFireDevice } from "../api/FireDevice";
 import type { FireDevice } from "../types/FireDevice";
 
-type State = { rows: FireDevice[]; loading: boolean; load: () => Promise<void> };
+interface FireDeviceState {
+  rows: FireDevice[];
+  loading: boolean;
+  error: string;
+  load: (buildingId?: number) => Promise<void>;
+}
 
-export const useFireDeviceStore = create<State>((set) => ({
+export const useFireDeviceStore = create<FireDeviceState>((set) => ({
   rows: [],
   loading: false,
-  async load() {
-    set({ loading: true });
-    set({ rows: await listFireDevice(), loading: false });
+  error: "",
+  async load(buildingId) {
+    set({ loading: true, error: "" });
+    try {
+      set({ rows: await listFireDevice(buildingId), loading: false });
+    } catch (err) {
+      set({ loading: false, error: (err as Error).message });
+    }
   }
 }));

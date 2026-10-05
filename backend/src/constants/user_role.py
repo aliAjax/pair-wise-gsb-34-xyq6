@@ -1,0 +1,14 @@
+"""系统角色：巡检员 / 维保人员 / 物业主管 / 审计员。"""
+
+UserRole = ["INSPECTOR", "MAINTAINER", "SUPERVISOR", "AUDITOR"]
+ROLE_INSPECTOR = "INSPECTOR"
+ROLE_MAINTAINER = "MAINTAINER"
+ROLE_SUPERVISOR = "SUPERVISOR"
+ROLE_AUDITOR = "AUDITOR"
+
+ROLE_LABELS = {
+    "INSPECTOR": "巡检员",
+    "MAINTAINER": "维保人员",
+    "SUPERVISOR": "物业主管",
+    "AUDITOR": "审计员",
+}

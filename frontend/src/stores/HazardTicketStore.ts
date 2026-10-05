@@ -1,14 +1,24 @@
 import { create } from "zustand";
-import { listHazardTicket } from "../api/HazardTicket";
+import { listHazardTicket, type HazardQuery } from "../api/HazardTicket";
 import type { HazardTicket } from "../types/HazardTicket";
 
-type State = { rows: HazardTicket[]; loading: boolean; load: () => Promise<void> };
+interface HazardTicketState {
+  rows: HazardTicket[];
+  loading: boolean;
+  error: string;
+  load: (query?: HazardQuery) => Promise<void>;
+}
 
-export const useHazardTicketStore = create<State>((set) => ({
+export const useHazardTicketStore = create<HazardTicketState>((set) => ({
   rows: [],
   loading: false,
-  async load() {
-    set({ loading: true });
-    set({ rows: await listHazardTicket(), loading: false });
+  error: "",
+  async load(query) {
+    set({ loading: true, error: "" });
+    try {
+      set({ rows: await listHazardTicket(query), loading: false });
+    } catch (err) {
+      set({ loading: false, error: (err as Error).message });
+    }
   }
 }));

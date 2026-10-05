@@ -1,32 +1,77 @@
+"""操作日志模板：每个实体至少 4 条，所有写操作都要记录。"""
+
 LOG_TEMPLATES = {
-  "Building": [
-    "Building.create",
-    "Building.update",
-    "Building.status",
-    "Building.export"
-  ],
-  "FireDevice": [
-    "FireDevice.create",
-    "FireDevice.update",
-    "FireDevice.status",
-    "FireDevice.export"
-  ],
-  "InspectionTask": [
-    "InspectionTask.create",
-    "InspectionTask.update",
-    "InspectionTask.status",
-    "InspectionTask.export"
-  ],
-  "InspectionResult": [
-    "InspectionResult.create",
-    "InspectionResult.update",
-    "InspectionResult.status",
-    "InspectionResult.export"
-  ],
-  "HazardTicket": [
-    "HazardTicket.create",
-    "HazardTicket.update",
-    "HazardTicket.status",
-    "HazardTicket.export"
-  ]
+    "Building": [
+        "Building.create",
+        "Building.update",
+        "Building.status",
+        "Building.export",
+    ],
+    "FireDevice": [
+        "FireDevice.create",
+        "FireDevice.update",
+        "FireDevice.status",
+        "FireDevice.export",
+    ],
+    "InspectionTask": [
+        "InspectionTask.create",
+        "InspectionTask.update",
+        "InspectionTask.status",
+        "InspectionTask.export",
+        "InspectionTask.claim",
+        "InspectionTask.submit",
+        "InspectionTask.review",
+        "InspectionTask.bump_version",
+    ],
+    "InspectionResult": [
+        "InspectionResult.create",
+        "InspectionResult.update",
+        "InspectionResult.status",
+        "InspectionResult.export",
+        "InspectionResult.batch_submit",
+    ],
+    "HazardTicket": [
+        "HazardTicket.create",
+        "HazardTicket.update",
+        "HazardTicket.status",
+        "HazardTicket.export",
+        "HazardTicket.assign",
+        "HazardTicket.rectify",
+        "HazardTicket.close",
+    ],
+    "Auth": [
+        "Auth.login",
+    ],
+}
+
+LOG_LABELS = {
+    "Building.create": "楼栋建档",
+    "Building.update": "楼栋更新",
+    "Building.status": "楼栋状态变更",
+    "Building.export": "楼栋台账导出",
+    "FireDevice.create": "消防设备登记",
+    "FireDevice.update": "消防设备更新",
+    "FireDevice.status": "消防设备状态重算",
+    "FireDevice.export": "消防设备导出",
+    "InspectionTask.create": "巡检任务创建",
+    "InspectionTask.update": "巡检任务更新",
+    "InspectionTask.status": "巡检任务状态变更",
+    "InspectionTask.export": "巡检任务导出",
+    "InspectionTask.claim": "巡检任务领取",
+    "InspectionTask.submit": "巡检任务提交复核",
+    "InspectionTask.review": "巡检任务复验关闭",
+    "InspectionTask.bump_version": "巡检清单版本升级",
+    "InspectionResult.create": "巡检结果录入",
+    "InspectionResult.update": "巡检结果更新",
+    "InspectionResult.status": "巡检结果状态变更",
+    "InspectionResult.export": "巡检结果导出",
+    "InspectionResult.batch_submit": "巡检结果批量提交",
+    "HazardTicket.create": "隐患单生成",
+    "HazardTicket.update": "隐患单更新",
+    "HazardTicket.status": "隐患单状态变更",
+    "HazardTicket.export": "隐患单导出",
+    "HazardTicket.assign": "隐患单派单",
+    "HazardTicket.rectify": "隐患整改提交",
+    "HazardTicket.close": "隐患复验关闭",
+    "Auth.login": "用户登录",
 }
